@@ -11,7 +11,7 @@ function Index() {
 
   return (
     <div
-      className={` w-full flex flex-col items-center justify-center bg-gradient-to-br ${
+      className={`min-h-screen w-full flex flex-col items-center justify-center bg-gradient-to-br ${
         darkTheme
           ? "from-blue-950 via-slate-900 to-blue-950"
           : "from-sky-50 via-blue-50 to-sky-100"
