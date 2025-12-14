@@ -42,13 +42,17 @@ const Input = forwardRef<InputRef, InputProps>(
     },
     ref
   ) => {
+    const placeholderClasses = error
+      ? "placeholder:text-red-400 dark:placeholder:text-red-500"
+      : "placeholder:text-linear-400 dark:placeholder:text-linear-500";
+
     const baseInputClasses = `
       w-full px-4 py-3 
       bg-white/80 dark:bg-surface-dark-tertiary/80
       backdrop-blur-sm
       border rounded-xl
       text-linear-900 dark:text-linear-100
-      placeholder:text-linear-400 dark:placeholder:text-linear-500
+      ${placeholderClasses}
       shadow-sm
       transition-all duration-200 ease-out
       focus:outline-none focus:ring-2 focus:ring-offset-1
