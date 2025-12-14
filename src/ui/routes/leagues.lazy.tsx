@@ -4,7 +4,7 @@ import { useQuery } from "react-query";
 import { FixedSizeList as List } from "react-window";
 import CreateLeague from "../components/LeaguePage/CreateLeague";
 import LeaguesRow from "../components/LeaguePage/LeaguesRow";
-import { useReactQuerySubscription } from "../customHooks";
+import { useReactQuerySubscription } from "../hooks/useReactQuerySubscription";
 import { useTheme } from "../context/ThemeContext";
 import Loader from "../components/Loader";
 

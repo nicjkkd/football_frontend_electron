@@ -7,7 +7,7 @@ import { getTeams } from "../api/teams";
 import { useMemo } from "react";
 import { Team } from "../api/schemas";
 import PlayersRow from "../components/PlayerPage/PlayersRow";
-import { useReactQuerySubscription } from "../customHooks";
+import { useReactQuerySubscription } from "../hooks/useReactQuerySubscription";
 import { useTheme } from "../context/ThemeContext";
 import Loader from "../components/Loader";
 
