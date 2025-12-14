@@ -22,6 +22,55 @@ interface Props {
   setIsSubmitWithError: Dispatch<SetStateAction<string>>;
 }
 
+const selectStyles = {
+  control: (base: object, state: { isFocused: boolean }) => ({
+    ...base,
+    backgroundColor: "rgba(255, 255, 255, 0.8)",
+    borderColor: state.isFocused ? "#38bdf8" : "#bae6fd",
+    borderRadius: "0.75rem",
+    padding: "0.25rem",
+    boxShadow: state.isFocused ? "0 0 0 2px rgba(56, 189, 248, 0.3)" : "none",
+    "&:hover": {
+      borderColor: "#7dd3fc",
+    },
+    transition: "all 0.2s ease-out",
+  }),
+  option: (
+    base: object,
+    state: { isSelected: boolean; isFocused: boolean }
+  ) => ({
+    ...base,
+    backgroundColor: state.isSelected
+      ? "#0ea5e9"
+      : state.isFocused
+        ? "#e0f2fe"
+        : "transparent",
+    color: state.isSelected ? "#fff" : "#0c4a6e",
+    "&:active": {
+      backgroundColor: "#bae6fd",
+    },
+  }),
+  menu: (base: object) => ({
+    ...base,
+    borderRadius: "0.75rem",
+    overflow: "hidden",
+    boxShadow: "0 10px 15px -3px rgba(14, 165, 233, 0.1)",
+    border: "1px solid #bae6fd",
+  }),
+  menuPortal: (base: object) => ({
+    ...base,
+    zIndex: 9999,
+  }),
+  placeholder: (base: object) => ({
+    ...base,
+    color: "#7dd3fc",
+  }),
+  singleValue: (base: object) => ({
+    ...base,
+    color: "#0c4a6e",
+  }),
+};
+
 export default function CreatePlayerForm({
   setIsOpen,
   setIsSubmitSuccessfull,
@@ -109,70 +158,83 @@ export default function CreatePlayerForm({
   };
 
   return (
-    <div>
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="space-y-4 max-w-md mx-auto m-5"
-      >
-        <Input
-          placeholder="First Name"
-          {...register("firstName")}
-          error={errors.firstName?.message}
-        ></Input>
-        <Input
-          placeholder="Last Name"
-          {...register("lastName")}
-          error={errors.lastName?.message}
-        ></Input>
-        <Input
-          placeholder="Position"
-          {...register("position")}
-          error={errors.position?.message}
-        ></Input>
-        <Input
-          placeholder="Birth Date"
-          type="date"
-          {...register("dateBirth")}
-          error={errors.dateBirth?.message}
-        ></Input>
-        <Input
-          placeholder="Player Number"
-          {...register("playerNumber")}
-          error={errors.playerNumber?.message}
-        ></Input>
+    <div className="max-w-md mx-auto px-4">
+      <div className="glass rounded-2xl p-6 shadow-glass dark:bg-slate-950/95 dark:border dark:border-slate-800/80 dark:backdrop-blur-xl">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+          <Input
+            placeholder="John"
+            label="First Name"
+            {...register("firstName")}
+            error={errors.firstName?.message}
+          />
+          <Input
+            placeholder="Doe"
+            label="Last Name"
+            {...register("lastName")}
+            error={errors.lastName?.message}
+          />
+          <Input
+            placeholder="BENCH, SW, LB, LCB, etc."
+            label="Position"
+            {...register("position")}
+            error={errors.position?.message}
+          />
+          <Input
+            placeholder="Select date"
+            label="Birth Date"
+            type="date"
+            {...register("dateBirth")}
+            error={errors.dateBirth?.message}
+          />
+          <Input
+            placeholder="e.g. 10"
+            label="Player Number"
+            {...register("playerNumber")}
+            error={errors.playerNumber?.message}
+          />
 
-        <Controller
-          control={control}
-          name="teamId"
-          render={({ field: { onChange, value } }) => (
-            <Select
-              options={teamOptions}
-              value={teamOptions.filter(
-                (teamOption) => teamOption.value === value
+          <div className="space-y-2">
+            <label className="block text-sm font-medium text-linear-700 dark:text-linear-300">
+              Team
+            </label>
+            <Controller
+              control={control}
+              name="teamId"
+              render={({ field: { onChange, value } }) => (
+                <Select
+                  styles={selectStyles}
+                  options={teamOptions}
+                  placeholder="Select a team..."
+                  isClearable
+                  value={teamOptions.filter(
+                    (teamOption) => teamOption.value === value
+                  )}
+                  onChange={(chosenTeam) => {
+                    console.log(chosenTeam);
+                    return onChange(chosenTeam?.value);
+                  }}
+                  menuPortalTarget={document.body}
+                  menuPosition="fixed"
+                />
               )}
-              onChange={(chosenTeam) => {
-                console.log(chosenTeam);
-                return onChange(chosenTeam?.value);
-              }}
             />
-          )}
-        />
+          </div>
 
-        <Button
-          type="submit"
-          className="w-full py-2 bg-gray-800 text-white rounded-md transition hover:bg-gray-700 cursor-pointer disabled:bg-gray-400 disabled:cursor-not-allowed disabled:text-gray-200"
-          disabled={isLoading}
-        >
-          Submit
-        </Button>
-        <Button
-          type="button"
-          className="w-full py-2 bg-gray-800 text-white rounded-md transition hover:bg-gray-700 cursor-pointer disabled:bg-gray-400 disabled:cursor-not-allowed disabled:text-gray-200"
-          onClick={handleReset}
-        >
-          Reset Form
-        </Button>
-      </form>
+          <div className="flex gap-3 pt-2">
+            <Button
+              type="submit"
+              variant="primary"
+              className="flex-1"
+              disabled={isLoading}
+            >
+              Create Player
+            </Button>
+            <Button type="button" variant="secondary" onClick={handleReset}>
+              Reset
+            </Button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 }

@@ -72,41 +72,43 @@ export default function CreateTeamForm({
   };
 
   return (
-    <div>
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="space-y-4 max-w-md mx-auto m-5"
-      >
-        <Input
-          placeholder="Team Name"
-          {...register("teamName")}
-          error={errors.teamName?.message}
-        ></Input>
-        <Input
-          placeholder="City"
-          {...register("city")}
-          error={errors.city?.message}
-        ></Input>
-        <Input
-          placeholder="Created in year..."
-          {...register("since")}
-          error={errors.since?.message}
-        ></Input>
-        <Button
-          type="submit"
-          className="w-full py-2 bg-gray-800 text-white rounded-md transition hover:bg-gray-700 cursor-pointer disabled:bg-gray-400 disabled:cursor-not-allowed disabled:text-gray-200"
-          disabled={isLoading}
-        >
-          Submit
-        </Button>
-        <Button
-          type="button"
-          className="w-full py-2 bg-gray-800 text-white rounded-md transition hover:bg-gray-700 cursor-pointer disabled:bg-gray-400 disabled:cursor-not-allowed disabled:text-gray-200"
-          onClick={handleReset}
-        >
-          Reset Form
-        </Button>
-      </form>
+    <div className="max-w-md mx-auto px-4">
+      <div className="glass rounded-2xl p-6 shadow-glass dark:bg-slate-950/95 dark:border dark:border-slate-800/80 dark:backdrop-blur-xl">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+          <Input
+            placeholder="Team Name"
+            label="Team Name"
+            {...register("teamName")}
+            error={errors.teamName?.message}
+          />
+          <Input
+            placeholder="City"
+            label="City"
+            {...register("city")}
+            error={errors.city?.message}
+          />
+          <Input
+            placeholder="e.g. 1990"
+            label="Founded Year"
+            {...register("since")}
+            error={errors.since?.message}
+          />
+
+          <div className="flex gap-3 pt-2">
+            <Button
+              type="submit"
+              variant="primary"
+              className="flex-1"
+              disabled={isLoading}
+            >
+              Create Team
+            </Button>
+            <Button type="button" variant="secondary" onClick={handleReset}>
+              Reset
+            </Button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 }

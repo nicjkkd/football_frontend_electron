@@ -1,7 +1,9 @@
 import { forwardRef, InputHTMLAttributes } from "react";
 
-interface InputProps
-  extends Omit<InputHTMLAttributes<HTMLInputElement>, "className"> {
+interface InputProps extends Omit<
+  InputHTMLAttributes<HTMLInputElement>,
+  "className"
+> {
   // Custom props
   label?: string;
   error?: string;
@@ -40,18 +42,26 @@ const Input = forwardRef<InputRef, InputProps>(
     },
     ref
   ) => {
-    // Base input classes
-    const baseInputClasses =
-      "w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 transition-colors duration-200";
+    const baseInputClasses = `
+      w-full px-4 py-3 
+      bg-white/80 dark:bg-surface-dark-tertiary/80
+      backdrop-blur-sm
+      border rounded-xl
+      text-linear-900 dark:text-linear-100
+      placeholder:text-linear-400 dark:placeholder:text-linear-500
+      shadow-sm
+      transition-all duration-200 ease-out
+      focus:outline-none focus:ring-2 focus:ring-offset-1
+    `;
 
     // Dynamic input classes based on state
     const stateClasses = error
-      ? "border-red-500 focus:border-red-500 focus:ring-red-500"
-      : "border-gray-300 focus:border-blue-500 focus:ring-blue-500";
+      ? "border-red-400 dark:border-red-500 focus:border-red-500 focus:ring-red-400/30 dark:focus:ring-red-500/30"
+      : "border-linear-200 dark:border-linear-700 focus:border-linear-400 dark:focus:border-linear-500 focus:ring-linear-400/30 dark:focus:ring-linear-500/30 hover:border-linear-300 dark:hover:border-linear-600 hover:shadow-linear";
 
     // Disabled classes
     const disabledClasses = disabled
-      ? "bg-gray-100 cursor-not-allowed text-gray-500 opacity-50"
+      ? "bg-linear-50 dark:bg-surface-dark-primary cursor-not-allowed text-linear-400 dark:text-linear-600 opacity-60"
       : "";
 
     return (
@@ -59,7 +69,7 @@ const Input = forwardRef<InputRef, InputProps>(
         {label && (
           <label
             htmlFor={id}
-            className={`block text-sm font-medium text-gray-700 ${labelClassName}`}
+            className={`block text-sm font-medium text-linear-700 dark:text-linear-300 ${labelClassName}`}
           >
             {label}
             {required && <span className="text-red-500 ml-1">*</span>}
@@ -80,12 +90,11 @@ const Input = forwardRef<InputRef, InputProps>(
           {...props}
         />
 
-        {/* Error message */}
         {error && (
           <div
             id={`${id}-error`}
             role="alert"
-            className={`flex items-center space-x-1 ${errorClassName}`}
+            className={`flex items-center gap-1.5 animate-slide-down ${errorClassName}`}
           >
             <svg
               className="w-4 h-4 text-red-500 flex-shrink-0"
@@ -98,7 +107,7 @@ const Input = forwardRef<InputRef, InputProps>(
                 clipRule="evenodd"
               />
             </svg>
-            <span className="text-sm text-red-500">{error}</span>
+            <span className="text-sm text-red-500 font-medium">{error}</span>
           </div>
         )}
       </div>

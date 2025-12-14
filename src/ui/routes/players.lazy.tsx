@@ -8,12 +8,16 @@ import { useMemo } from "react";
 import { Team } from "../api/schemas";
 import PlayersRow from "../components/PlayerPage/PlayersRow";
 import { useReactQuerySubscription } from "../customHooks";
+import { useTheme } from "../context/ThemeContext";
+import Loader from "../components/Loader";
 
 export const Route = createLazyFileRoute("/players")({
   component: Players,
 });
 
 function Players() {
+  const darkTheme = useTheme();
+
   const playersQuery = useQuery({
     queryKey: ["players"],
     queryFn: ({ signal }) => getPlayers(signal),
@@ -48,36 +52,81 @@ function Players() {
   }, [teamsQuery.data, playersQuery.data]);
 
   if (playersQuery.isError) {
-    return <p>Error with fetching players</p>;
+    return (
+      <div className="flex items-center justify-center p-8">
+        <div
+          className={`px-4 py-3 rounded-xl ${
+            darkTheme
+              ? "bg-red-900/30 border border-red-800 text-red-300"
+              : "bg-red-50 border border-red-200 text-red-700"
+          }`}
+        >
+          Error fetching players
+        </div>
+      </div>
+    );
   }
 
   if (playersQuery.isLoading) {
-    return <p>Loading...</p>;
+    return (
+      <div className="flex items-center justify-center p-12">
+        <Loader styles="w-12 h-12" />
+      </div>
+    );
   }
 
   return (
     <>
       <CreatePlayer />
 
-      <div className="m-5">
-        <div className="overflow-x-auto w-full">
-          <table
-            className="min-w-full table-auto border-collapse border border-gray-300"
-            aria-label="Players Table"
+      <div className="mx-auto max-w-7xl px-4 mt-8">
+        <div
+          className={`rounded-2xl overflow-hidden backdrop-blur-md border transition-all duration-300 ${
+            darkTheme
+              ? "bg-slate-900/60 border-linear-700/30 shadow-2xl shadow-linear-900/30"
+              : "bg-white/70 border-linear-200/50 shadow-xl shadow-linear-500/10"
+          }`}
+        >
+          <div
+            className={`grid grid-cols-6 gap-4 px-6 py-4 border-b ${
+              darkTheme
+                ? "bg-slate-800/80 border-linear-700/40"
+                : "bg-linear-50/80 border-linear-200/60"
+            }`}
           >
-            <thead>
-              <tr className="bg-gray-100 text-sm font-semibold text-gray-700">
-                <th className="px-4 py-2 border-b">First Name</th>
-                <th className="px-4 py-2 border-b">Last Name</th>
-                <th className="px-4 py-2 border-b">Date of Birth</th>
-                <th className="px-4 py-2 border-b">Position</th>
-                <th className="px-4 py-2 border-b">Player Number</th>
-                <th className="px-4 py-2 border-b">Player Team</th>
-              </tr>
-            </thead>
-          </table>
+            <div
+              className={`text-sm font-semibold ${darkTheme ? "text-linear-200" : "text-linear-800"}`}
+            >
+              First Name
+            </div>
+            <div
+              className={`text-sm font-semibold ${darkTheme ? "text-linear-200" : "text-linear-800"}`}
+            >
+              Last Name
+            </div>
+            <div
+              className={`text-sm font-semibold ${darkTheme ? "text-linear-200" : "text-linear-800"}`}
+            >
+              Birth Date
+            </div>
+            <div
+              className={`text-sm font-semibold ${darkTheme ? "text-linear-200" : "text-linear-800"}`}
+            >
+              Position
+            </div>
+            <div
+              className={`text-sm font-semibold ${darkTheme ? "text-linear-200" : "text-linear-800"}`}
+            >
+              Player Number
+            </div>
+            <div
+              className={`text-sm font-semibold ${darkTheme ? "text-linear-200" : "text-linear-800"}`}
+            >
+              Team
+            </div>
+          </div>
 
-          <div className="flex items-center justify-center bg-gray-50 rounded-lg border border-gray-200 p-4 ">
+          <div className={`${darkTheme ? "bg-slate-900/40" : "bg-white/50"}`}>
             <List
               className="w-full"
               height={500}

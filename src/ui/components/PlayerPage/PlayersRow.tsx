@@ -23,6 +23,54 @@ import Button from "../Button";
 import { Bounce, toast } from "react-toastify";
 import { useTheme } from "../../context/ThemeContext";
 
+const selectStyles = {
+  control: (base: object, state: { isFocused: boolean }) => ({
+    ...base,
+    backgroundColor: "rgba(255, 255, 255, 0.8)",
+    borderColor: state.isFocused ? "#38bdf8" : "#bae6fd",
+    borderRadius: "0.75rem",
+    padding: "0.125rem",
+    minHeight: "42px",
+    boxShadow: state.isFocused ? "0 0 0 2px rgba(56, 189, 248, 0.3)" : "none",
+    "&:hover": {
+      borderColor: "#7dd3fc",
+    },
+    transition: "all 0.2s ease-out",
+  }),
+  option: (
+    base: object,
+    state: { isSelected: boolean; isFocused: boolean }
+  ) => ({
+    ...base,
+    backgroundColor: state.isSelected
+      ? "#0ea5e9"
+      : state.isFocused
+        ? "#e0f2fe"
+        : "transparent",
+    color: state.isSelected ? "#fff" : "#0c4a6e",
+  }),
+  menu: (base: object) => ({
+    ...base,
+    borderRadius: "0.75rem",
+    overflow: "hidden",
+    boxShadow: "0 10px 15px -3px rgba(14, 165, 233, 0.1)",
+    border: "1px solid #bae6fd",
+    zIndex: 9999,
+  }),
+  menuPortal: (base: object) => ({
+    ...base,
+    zIndex: 9999,
+  }),
+  placeholder: (base: object) => ({
+    ...base,
+    color: "#7dd3fc",
+  }),
+  singleValue: (base: object) => ({
+    ...base,
+    color: "#0c4a6e",
+  }),
+};
+
 const PlayersRow: React.FC<ListChildComponentProps<PlayerWithTeamName[]>> = ({
   index,
   style,
@@ -151,9 +199,17 @@ const PlayersRow: React.FC<ListChildComponentProps<PlayerWithTeamName[]>> = ({
   return (
     <div
       style={style}
-      className={`flex items-center gap-4 p-4 border-b border-gray-200 ${
-        index % 2 === 0 ? "bg-gray-100" : "bg-white"
-      }`}
+      className={`
+        flex items-center gap-4 p-4 
+        transition-all duration-200 ease-out
+        ${
+          index % 2 === 0
+            ? "bg-linear-50/50 dark:bg-surface-dark-tertiary/50"
+            : "bg-white/80 dark:bg-surface-dark-secondary/80"
+        }
+        hover:bg-linear-100/80 dark:hover:bg-linear-900/30
+        border-b border-linear-100 dark:border-linear-900/50
+      `}
     >
       <form
         onSubmit={handleSubmit(onSubmit)}
@@ -163,38 +219,39 @@ const PlayersRow: React.FC<ListChildComponentProps<PlayerWithTeamName[]>> = ({
           placeholder="First Name"
           {...register("firstName")}
           error={errors.firstName?.message}
-        ></Input>
+        />
 
         <Input
           placeholder="Last Name"
           {...register("lastName")}
           error={errors.lastName?.message}
-        ></Input>
+        />
 
         <Input
           placeholder="Birth Date"
           type="date"
           {...register("dateBirth")}
           error={errors.dateBirth?.message}
-        ></Input>
+        />
 
         <Input
           placeholder="Position"
           {...register("position")}
           error={errors.position?.message}
-        ></Input>
+        />
 
         <Input
-          placeholder="Player Number"
+          placeholder="#"
           {...register("playerNumber")}
           error={errors.playerNumber?.message}
-        ></Input>
+        />
 
         <Controller
           control={control}
           name="teamId"
           render={({ field: { onChange, value } }) => (
             <Select
+              styles={selectStyles}
               options={teamOptions}
               value={teamOptions.filter(
                 (teamOption) => teamOption.value === value
@@ -202,8 +259,11 @@ const PlayersRow: React.FC<ListChildComponentProps<PlayerWithTeamName[]>> = ({
               onChange={(chosenTeam) => {
                 return onChange(chosenTeam?.value);
               }}
-              placeholder="Select Team"
+              placeholder="Team"
+              isClearable
               className="min-w-[150px]"
+              menuPortalTarget={document.body}
+              menuPosition="fixed"
             />
           )}
         />
@@ -211,32 +271,39 @@ const PlayersRow: React.FC<ListChildComponentProps<PlayerWithTeamName[]>> = ({
         {isDirty && (
           <Button
             type="submit"
+            variant="primary"
             disabled={isSubmitSuccessful}
             isLoading={isUpdateLoading}
-            className="py-2 px-4 bg-gray-800 text-white rounded-md transition-all duration-300 ease-in-out transform scale-95 opacity-0 hover:scale-105 hover:bg-gray-700 cursor-pointer disabled:bg-gray-400 disabled:cursor-not-allowed disabled:text-gray-200 whitespace-nowrap"
-            style={{
-              animation: "fadeIn 0.3s ease-in-out forwards",
-            }}
+            className="whitespace-nowrap animate-fade-in"
           >
-            Save Changes
+            Save
           </Button>
         )}
       </form>
 
       <Button
         type="button"
-        className={`py-2 px-4 rounded-lg transition-all ${
-          isDeleteLoading || isUpdateLoading
-            ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-            : "bg-red-500 text-white hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-300"
-        }`}
+        variant="danger"
+        className="!px-3 !py-2"
         title="Delete Player"
         onClick={() => {
           handleClick(player.id);
         }}
         disabled={isDeleteLoading || isUpdateLoading}
       >
-        X
+        <svg
+          className="w-4 h-4"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+          />
+        </svg>
       </Button>
     </div>
   );

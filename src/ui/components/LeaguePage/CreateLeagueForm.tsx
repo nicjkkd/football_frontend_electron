@@ -29,6 +29,69 @@ interface SelectOptionsType {
   label: string;
 }
 
+const selectStyles = {
+  control: (base: object, state: { isFocused: boolean }) => ({
+    ...base,
+    backgroundColor: "rgba(255, 255, 255, 0.8)",
+    borderColor: state.isFocused ? "#38bdf8" : "#bae6fd",
+    borderRadius: "0.75rem",
+    padding: "0.25rem",
+    boxShadow: state.isFocused ? "0 0 0 2px rgba(56, 189, 248, 0.3)" : "none",
+    "&:hover": {
+      borderColor: "#7dd3fc",
+    },
+    transition: "all 0.2s ease-out",
+  }),
+  option: (
+    base: object,
+    state: { isSelected: boolean; isFocused: boolean }
+  ) => ({
+    ...base,
+    backgroundColor: state.isSelected
+      ? "#0ea5e9"
+      : state.isFocused
+        ? "#e0f2fe"
+        : "transparent",
+    color: state.isSelected ? "#fff" : "#0c4a6e",
+    "&:active": {
+      backgroundColor: "#bae6fd",
+    },
+  }),
+  multiValue: (base: object) => ({
+    ...base,
+    backgroundColor: "#e0f2fe",
+    borderRadius: "0.5rem",
+  }),
+  multiValueLabel: (base: object) => ({
+    ...base,
+    color: "#0369a1",
+    fontWeight: "500",
+  }),
+  multiValueRemove: (base: object) => ({
+    ...base,
+    color: "#0369a1",
+    "&:hover": {
+      backgroundColor: "#bae6fd",
+      color: "#0c4a6e",
+    },
+  }),
+  menu: (base: object) => ({
+    ...base,
+    borderRadius: "0.75rem",
+    overflow: "hidden",
+    boxShadow: "0 10px 15px -3px rgba(14, 165, 233, 0.1)",
+    border: "1px solid #bae6fd",
+  }),
+  menuPortal: (base: object) => ({
+    ...base,
+    zIndex: 9999,
+  }),
+  placeholder: (base: object) => ({
+    ...base,
+    color: "#7dd3fc",
+  }),
+};
+
 export default function CreateLeagueForm({
   setIsOpen,
   setIsSubmitSuccessfull,
@@ -109,54 +172,62 @@ export default function CreateLeagueForm({
   };
 
   return (
-    <div>
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="space-y-4 max-w-md mx-auto m-5"
-      >
-        <Input
-          placeholder="League Name"
-          {...register("leagueName")}
-          error={errors.leagueName?.message}
-        ></Input>
-        <Controller
-          control={control}
-          name="teamIdToAdd"
-          render={({ field: { onChange, value } }) => {
-            return (
-              <Select
-                isMulti
-                options={teamOptions}
-                value={teamOptions.filter((option) =>
-                  value?.includes(option.value)
-                )}
-                onChange={(chosenTeamArr) => {
-                  const chosenTeamIds = chosenTeamArr?.map(
-                    (chosenTeamOption) => chosenTeamOption.value
-                  );
-                  return onChange(chosenTeamIds);
-                }}
-              />
-            );
-          }}
-        />
+    <div className="max-w-md mx-auto px-4">
+      <div className="glass rounded-2xl p-6 shadow-glass dark:bg-slate-950/95 dark:border dark:border-slate-800/80 dark:backdrop-blur-xl">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+          <Input
+            placeholder="Premier League, La Liga, etc."
+            label="League Name"
+            {...register("leagueName")}
+            error={errors.leagueName?.message}
+          />
 
-        <Button
-          type="submit"
-          className="w-full py-2 bg-gray-800 text-white rounded-md transition hover:bg-gray-700 cursor-pointer disabled:bg-gray-400 disabled:cursor-not-allowed disabled:text-gray-200"
-          disabled={isLoading}
-        >
-          Submit
-        </Button>
+          <div className="space-y-2">
+            <label className="block text-sm font-medium text-linear-700 dark:text-linear-300">
+              Teams to Add
+            </label>
+            <Controller
+              control={control}
+              name="teamIdToAdd"
+              render={({ field: { onChange, value } }) => {
+                return (
+                  <Select
+                    isMulti
+                    styles={selectStyles}
+                    options={teamOptions}
+                    placeholder="Select teams..."
+                    value={teamOptions.filter((option) =>
+                      value?.includes(option.value)
+                    )}
+                    onChange={(chosenTeamArr) => {
+                      const chosenTeamIds = chosenTeamArr?.map(
+                        (chosenTeamOption) => chosenTeamOption.value
+                      );
+                      return onChange(chosenTeamIds);
+                    }}
+                    menuPortalTarget={document.body}
+                    menuPosition="fixed"
+                  />
+                );
+              }}
+            />
+          </div>
 
-        <Button
-          type="button"
-          className="w-full py-2 bg-gray-800 text-white rounded-md transition hover:bg-gray-700 cursor-pointer disabled:bg-gray-400 disabled:cursor-not-allowed disabled:text-gray-200"
-          onClick={handleReset}
-        >
-          Reset Form
-        </Button>
-      </form>
+          <div className="flex gap-3 pt-2">
+            <Button
+              type="submit"
+              variant="primary"
+              className="flex-1"
+              disabled={isLoading}
+            >
+              Create League
+            </Button>
+            <Button type="button" variant="secondary" onClick={handleReset}>
+              Reset
+            </Button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 }
